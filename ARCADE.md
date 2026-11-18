@@ -25,13 +25,13 @@ game:
   levels: 3                 # 3 levels of 2 waves each (6 waves, 48 packets)
   card_image: "assets/images/title.png"
   card_image_alt: "Game screen: the access list on the left with the deciding rule highlighted, a formation of labelled network packets at the top of the playfield, a firewall ship at the bottom, and a Correct message with full health."
-  repo: ""                  # (HUMAN) the GitHub URL, https://github.com/<user>/<repo>
+  repo: "https://github.com/pyjonathan/permit-or-pew"   # given by the creator (the .git ending removed)
   repo_path: ""
   license: "Apache-2.0"     # chosen by the creator (it matches the workshop repositories this was adapted from); see LICENSE and NOTICE
 
 creator:                     # (HUMAN) ask the human for every field here
   name: "Jonathan Buchanan"  # name to show on the card (given by the creator)
-  github: ""                 # GitHub username
+  github: "pyjonathan"       # given by the creator
   location: ""               # "City, Country" or just "Country" — optional, leave "" to hide
   organization: ""           # optional
   links: [https://www.linkedin.com/in/jonathan-buchanan-a58996b/]   # given by the creator
