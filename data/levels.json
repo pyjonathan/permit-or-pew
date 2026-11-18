@@ -1,0 +1,731 @@
+{
+  "schemaVersion": 1,
+  "maxHealth": 3,
+  "playfield": {
+    "width": 700,
+    "height": 560
+  },
+  "sources": [
+    {
+      "id": "src-acl-eval",
+      "title": "Cisco IOS XE 17 ACLs Configuration Guide: Access Control Lists",
+      "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/c9000/security/acls/acls-configuration-guide/access-control-lists.html",
+      "section": "How ACLs work",
+      "claim": "The device tests a packet against the conditions in an access list one by one, and the first match decides whether the packet is accepted or rejected. Because it stops testing after the first match, the order of the conditions in the list is critical."
+    },
+    {
+      "id": "src-acl-implicit",
+      "title": "Cisco IOS XE 17 ACLs Configuration Guide: Access Control Lists",
+      "url": "https://www.cisco.com/c/en/us/td/docs/switches/lan/c9000/security/acls/acls-configuration-guide/access-control-lists.html",
+      "section": "How to configure IPv4 access control lists, Create extended named ACLs",
+      "claim": "The end of an extended named ACL contains an implicit deny statement for everything: a packet that matches no condition is rejected (implicit deny)."
+    },
+    {
+      "id": "src-acl-syntax",
+      "title": "Cisco IOS XE Catalyst SD-WAN Qualified Command Reference Guide: ACL Commands",
+      "url": "https://www.cisco.com/c/en/us/td/docs/routers/sdwan/command/iosxe/qualified-cli-command-reference-guide/m-acl-commands.html",
+      "section": "permit (the protocol and any/host keywords)",
+      "claim": "An extended ACL entry names the protocol to match (such as tcp, udp, or icmp). The keyword ip matches any Internet protocol, including ICMP, TCP, and UDP. The keywords any and host stand for any address and for one single host."
+    },
+    {
+      "id": "src-cidr",
+      "title": "RFC 4632: Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan (BCP 122)",
+      "url": "https://www.rfc-editor.org/rfc/rfc4632",
+      "section": "3.1 Basic Concept and Prefix Notation",
+      "claim": "A prefix is written as an address followed by a slash and a decimal value between 0 and 32 that describes the number of significant bits, which make explicit which bits of the address are the network prefix. (The game writes ranges this way instead of Cisco's wildcard masks.)"
+    }
+  ],
+  "levels": [
+    {
+      "id": "L1",
+      "title": "Level 1: Read the entries",
+      "outcome": "LO1",
+      "sourceIds": [
+        "src-acl-eval",
+        "src-acl-syntax",
+        "src-cidr"
+      ],
+      "waves": [
+        {
+          "id": "1.1",
+          "acl": [
+            {
+              "seq": 10,
+              "action": "permit",
+              "protocol": "tcp",
+              "src": "any",
+              "dst": "host 10.0.0.5",
+              "port": 443
+            },
+            {
+              "seq": 20,
+              "action": "deny",
+              "protocol": "tcp",
+              "src": "any",
+              "dst": "any",
+              "port": 23
+            },
+            {
+              "seq": 30,
+              "action": "permit",
+              "protocol": "ip",
+              "src": "any",
+              "dst": "any"
+            }
+          ],
+          "diveTicks": 300,
+          "packets": [
+            {
+              "id": "p1",
+              "protocol": "tcp",
+              "src": "203.0.113.9",
+              "dst": "10.0.0.5",
+              "port": 443,
+              "slot": 0,
+              "diveAt": 580,
+              "path": "sway"
+            },
+            {
+              "id": "p2",
+              "protocol": "tcp",
+              "src": "203.0.113.9",
+              "dst": "10.0.0.5",
+              "port": 23,
+              "slot": 1,
+              "diveAt": 980,
+              "path": "sway"
+            },
+            {
+              "id": "p3",
+              "protocol": "udp",
+              "src": "198.51.100.7",
+              "dst": "10.0.0.8",
+              "port": 53,
+              "slot": 2,
+              "diveAt": 780,
+              "path": "zigzag"
+            },
+            {
+              "id": "p4",
+              "protocol": "tcp",
+              "src": "198.51.100.22",
+              "dst": "10.0.0.8",
+              "port": 23,
+              "slot": 3,
+              "diveAt": 480,
+              "path": "drop"
+            },
+            {
+              "id": "p5",
+              "protocol": "tcp",
+              "src": "203.0.113.50",
+              "dst": "10.0.0.8",
+              "port": 443,
+              "slot": 4,
+              "diveAt": 1180,
+              "path": "zigzag"
+            },
+            {
+              "id": "p6",
+              "protocol": "udp",
+              "src": "203.0.113.9",
+              "dst": "10.0.0.5",
+              "port": 23,
+              "slot": 5,
+              "diveAt": 880,
+              "path": "drop"
+            },
+            {
+              "id": "p7",
+              "protocol": "tcp",
+              "src": "192.0.2.1",
+              "dst": "10.0.0.5",
+              "port": 23,
+              "slot": 6,
+              "diveAt": 680,
+              "path": "swoop-in"
+            },
+            {
+              "id": "p8",
+              "protocol": "icmp",
+              "src": "198.51.100.7",
+              "dst": "10.0.0.5",
+              "slot": 7,
+              "diveAt": 1080,
+              "path": "swoop-in"
+            }
+          ],
+          "hints": [
+            "Read the entries from the top. For each one, compare protocol, source, destination, and port with the packet. The first entry where every field matches decides."
+          ]
+        },
+        {
+          "id": "1.2",
+          "acl": [
+            {
+              "seq": 10,
+              "action": "deny",
+              "protocol": "ip",
+              "src": "192.0.2.0/24",
+              "dst": "any"
+            },
+            {
+              "seq": 20,
+              "action": "permit",
+              "protocol": "ip",
+              "src": "any",
+              "dst": "any"
+            }
+          ],
+          "diveTicks": 300,
+          "packets": [
+            {
+              "id": "p1",
+              "protocol": "tcp",
+              "src": "192.0.2.77",
+              "dst": "10.0.0.5",
+              "port": 80,
+              "slot": 0,
+              "diveAt": 580,
+              "path": "sway"
+            },
+            {
+              "id": "p2",
+              "protocol": "tcp",
+              "src": "192.0.2.255",
+              "dst": "10.0.0.5",
+              "port": 80,
+              "slot": 1,
+              "diveAt": 980,
+              "path": "sway"
+            },
+            {
+              "id": "p3",
+              "protocol": "tcp",
+              "src": "192.0.3.1",
+              "dst": "10.0.0.5",
+              "port": 80,
+              "slot": 2,
+              "diveAt": 780,
+              "path": "zigzag"
+            },
+            {
+              "id": "p4",
+              "protocol": "udp",
+              "src": "192.0.2.0",
+              "dst": "10.0.0.8",
+              "port": 53,
+              "slot": 3,
+              "diveAt": 480,
+              "path": "drop"
+            },
+            {
+              "id": "p5",
+              "protocol": "tcp",
+              "src": "192.0.1.255",
+              "dst": "10.0.0.5",
+              "port": 80,
+              "slot": 4,
+              "diveAt": 1180,
+              "path": "zigzag"
+            },
+            {
+              "id": "p6",
+              "protocol": "icmp",
+              "src": "192.0.2.128",
+              "dst": "10.0.0.5",
+              "slot": 5,
+              "diveAt": 880,
+              "path": "drop"
+            },
+            {
+              "id": "p7",
+              "protocol": "tcp",
+              "src": "193.0.2.5",
+              "dst": "10.0.0.5",
+              "port": 443,
+              "slot": 6,
+              "diveAt": 680,
+              "path": "swoop-in"
+            },
+            {
+              "id": "p8",
+              "protocol": "udp",
+              "src": "192.0.3.0",
+              "dst": "10.0.0.8",
+              "port": 123,
+              "slot": 7,
+              "diveAt": 1080,
+              "path": "swoop-in"
+            }
+          ],
+          "hints": [
+            "A /24 prefix covers the 256 addresses that share the first three numbers. Check whether the packet's source starts with 192.0.2. If it does, it is inside the prefix."
+          ]
+        }
+      ],
+      "briefing": "## Your job\n\n- Packets dive toward your network. Check each one against the list.\n- **Denied?** Shoot it.\n- **Permitted?** Let it through.\n- Right call: +1 health (max 3). Wrong call: -1 health. At 0, the wave ends.\n\n## Read one entry\n\n> permit udp any host 192.168.5.9 eq 5060\n\n- **permit**: what to do with matches\n- **udp**: the protocol\n- **any**: the source\n- **host 192.168.5.9**: the destination\n- **eq 5060**: the port\n\n## Addresses\n\n- **any**: every address\n- **host 10.0.0.5**: exactly that one\n- **10.0.0.0/24**: 10.0.0.0 to 10.0.0.255\n\nAn entry matches only if **every** part matches.\n\n## Controls\n\n- Arrow keys move. Space fires.\n- The game never stops for a mistake. Each one is explained after the wave.\n- Simplified: IPv4 only, one packet at a time, no wildcard masks."
+    },
+    {
+      "id": "L2",
+      "title": "Level 2: First match wins",
+      "outcome": "LO2",
+      "sourceIds": [
+        "src-acl-eval"
+      ],
+      "waves": [
+        {
+          "id": "2.1",
+          "acl": [
+            {
+              "seq": 10,
+              "action": "permit",
+              "protocol": "tcp",
+              "src": "10.0.0.0/24",
+              "dst": "any",
+              "port": 22
+            },
+            {
+              "seq": 20,
+              "action": "deny",
+              "protocol": "tcp",
+              "src": "any",
+              "dst": "any",
+              "port": 22
+            },
+            {
+              "seq": 30,
+              "action": "permit",
+              "protocol": "ip",
+              "src": "any",
+              "dst": "any"
+            }
+          ],
+          "diveTicks": 260,
+          "packets": [
+            {
+              "id": "p1",
+              "protocol": "tcp",
+              "src": "10.0.0.15",
+              "dst": "172.16.0.1",
+              "port": 22,
+              "slot": 0,
+              "diveAt": 510,
+              "path": "sway"
+            },
+            {
+              "id": "p2",
+              "protocol": "tcp",
+              "src": "10.0.1.15",
+              "dst": "172.16.0.1",
+              "port": 22,
+              "slot": 1,
+              "diveAt": 870,
+              "path": "sway"
+            },
+            {
+              "id": "p3",
+              "protocol": "tcp",
+              "src": "10.0.0.15",
+              "dst": "172.16.0.1",
+              "port": 80,
+              "slot": 2,
+              "diveAt": 690,
+              "path": "zigzag"
+            },
+            {
+              "id": "p4",
+              "protocol": "tcp",
+              "src": "203.0.113.5",
+              "dst": "172.16.0.1",
+              "port": 22,
+              "slot": 3,
+              "diveAt": 420,
+              "path": "drop"
+            },
+            {
+              "id": "p5",
+              "protocol": "udp",
+              "src": "10.0.0.15",
+              "dst": "172.16.0.1",
+              "port": 22,
+              "slot": 4,
+              "diveAt": 1050,
+              "path": "zigzag"
+            },
+            {
+              "id": "p6",
+              "protocol": "tcp",
+              "src": "10.0.0.200",
+              "dst": "172.16.0.2",
+              "port": 22,
+              "slot": 5,
+              "diveAt": 780,
+              "path": "drop"
+            },
+            {
+              "id": "p7",
+              "protocol": "tcp",
+              "src": "10.0.2.9",
+              "dst": "172.16.0.1",
+              "port": 22,
+              "slot": 6,
+              "diveAt": 600,
+              "path": "swoop-in"
+            },
+            {
+              "id": "p8",
+              "protocol": "tcp",
+              "src": "198.51.100.4",
+              "dst": "172.16.0.1",
+              "port": 443,
+              "slot": 7,
+              "diveAt": 960,
+              "path": "swoop-in"
+            }
+          ],
+          "hints": [
+            "Stop at the first entry that matches. If a packet matches entry 10, entries 20 and 30 do not matter, even if they would also match."
+          ]
+        },
+        {
+          "id": "2.2",
+          "acl": [
+            {
+              "seq": 10,
+              "action": "deny",
+              "protocol": "tcp",
+              "src": "any",
+              "dst": "any",
+              "port": 22
+            },
+            {
+              "seq": 20,
+              "action": "permit",
+              "protocol": "tcp",
+              "src": "10.0.0.0/24",
+              "dst": "any",
+              "port": 22
+            },
+            {
+              "seq": 30,
+              "action": "permit",
+              "protocol": "ip",
+              "src": "any",
+              "dst": "any"
+            }
+          ],
+          "diveTicks": 260,
+          "packets": [
+            {
+              "id": "p1",
+              "protocol": "tcp",
+              "src": "10.0.0.15",
+              "dst": "172.16.0.1",
+              "port": 22,
+              "slot": 0,
+              "diveAt": 510,
+              "path": "sway"
+            },
+            {
+              "id": "p2",
+              "protocol": "tcp",
+              "src": "10.0.0.15",
+              "dst": "172.16.0.1",
+              "port": 443,
+              "slot": 1,
+              "diveAt": 870,
+              "path": "sway"
+            },
+            {
+              "id": "p3",
+              "protocol": "udp",
+              "src": "10.0.0.15",
+              "dst": "172.16.0.1",
+              "port": 22,
+              "slot": 2,
+              "diveAt": 690,
+              "path": "zigzag"
+            },
+            {
+              "id": "p4",
+              "protocol": "tcp",
+              "src": "10.0.0.200",
+              "dst": "172.16.0.1",
+              "port": 22,
+              "slot": 3,
+              "diveAt": 420,
+              "path": "drop"
+            },
+            {
+              "id": "p5",
+              "protocol": "tcp",
+              "src": "203.0.113.5",
+              "dst": "172.16.0.1",
+              "port": 22,
+              "slot": 4,
+              "diveAt": 1050,
+              "path": "zigzag"
+            },
+            {
+              "id": "p6",
+              "protocol": "tcp",
+              "src": "10.0.0.15",
+              "dst": "172.16.0.1",
+              "port": 23,
+              "slot": 5,
+              "diveAt": 780,
+              "path": "drop"
+            },
+            {
+              "id": "p7",
+              "protocol": "icmp",
+              "src": "10.0.0.15",
+              "dst": "172.16.0.1",
+              "slot": 6,
+              "diveAt": 600,
+              "path": "swoop-in"
+            },
+            {
+              "id": "p8",
+              "protocol": "tcp",
+              "src": "10.0.1.15",
+              "dst": "172.16.0.1",
+              "port": 443,
+              "slot": 7,
+              "diveAt": 960,
+              "path": "swoop-in"
+            }
+          ],
+          "hints": [
+            "Compare this list with the one in the previous wave. The entries are the same, but the order is different, and a different entry now matches first."
+          ]
+        }
+      ],
+      "briefing": "## The rule\n\n- Read the list **top to bottom**.\n- The **first entry that matches** decides.\n- Stop there. Later entries are never checked.\n\n## Example\n\n> 10 deny tcp any any eq 25\n> 20 permit tcp 192.168.7.0/24 any eq 25\n\nA TCP packet from 192.168.7.4 to port 25 matches entry 10 first, so it is **denied**. Entry 20 would also match, but it is never reached.\n\n## Tip\n\n- The same entries in a different order can give a different answer.\n- Packets dive a little faster now."
+    },
+    {
+      "id": "L3",
+      "title": "Level 3: When nothing matches",
+      "outcome": "LO3",
+      "sourceIds": [
+        "src-acl-eval",
+        "src-acl-implicit",
+        "src-acl-syntax",
+        "src-cidr"
+      ],
+      "waves": [
+        {
+          "id": "3.1",
+          "acl": [
+            {
+              "seq": 10,
+              "action": "permit",
+              "protocol": "tcp",
+              "src": "10.0.0.0/24",
+              "dst": "any",
+              "port": 80
+            },
+            {
+              "seq": 20,
+              "action": "permit",
+              "protocol": "tcp",
+              "src": "10.0.0.0/24",
+              "dst": "any",
+              "port": 443
+            }
+          ],
+          "diveTicks": 220,
+          "packets": [
+            {
+              "id": "p1",
+              "protocol": "tcp",
+              "src": "10.0.0.9",
+              "dst": "172.16.0.1",
+              "port": 80,
+              "slot": 0,
+              "diveAt": 440,
+              "path": "sway"
+            },
+            {
+              "id": "p2",
+              "protocol": "tcp",
+              "src": "10.0.0.9",
+              "dst": "172.16.0.1",
+              "port": 8080,
+              "slot": 1,
+              "diveAt": 760,
+              "path": "sway"
+            },
+            {
+              "id": "p3",
+              "protocol": "udp",
+              "src": "10.0.0.9",
+              "dst": "172.16.0.1",
+              "port": 53,
+              "slot": 2,
+              "diveAt": 600,
+              "path": "zigzag"
+            },
+            {
+              "id": "p4",
+              "protocol": "tcp",
+              "src": "10.0.1.9",
+              "dst": "172.16.0.1",
+              "port": 443,
+              "slot": 3,
+              "diveAt": 360,
+              "path": "drop"
+            },
+            {
+              "id": "p5",
+              "protocol": "tcp",
+              "src": "10.0.0.77",
+              "dst": "172.16.0.1",
+              "port": 443,
+              "slot": 4,
+              "diveAt": 920,
+              "path": "zigzag"
+            },
+            {
+              "id": "p6",
+              "protocol": "tcp",
+              "src": "10.0.0.9",
+              "dst": "172.16.0.1",
+              "port": 22,
+              "slot": 5,
+              "diveAt": 680,
+              "path": "drop"
+            },
+            {
+              "id": "p7",
+              "protocol": "icmp",
+              "src": "10.0.0.9",
+              "dst": "172.16.0.1",
+              "slot": 6,
+              "diveAt": 520,
+              "path": "swoop-in"
+            },
+            {
+              "id": "p8",
+              "protocol": "tcp",
+              "src": "10.0.0.254",
+              "dst": "172.16.0.1",
+              "port": 80,
+              "slot": 7,
+              "diveAt": 840,
+              "path": "swoop-in"
+            }
+          ],
+          "hints": [
+            "This list has no deny entries and no catch-all. If a packet matches no entry, the implicit deny at the end drops it, so you should shoot it."
+          ]
+        },
+        {
+          "id": "3.2",
+          "acl": [
+            {
+              "seq": 10,
+              "action": "deny",
+              "protocol": "icmp",
+              "src": "any",
+              "dst": "any"
+            },
+            {
+              "seq": 20,
+              "action": "permit",
+              "protocol": "ip",
+              "src": "10.0.0.0/8",
+              "dst": "any"
+            }
+          ],
+          "diveTicks": 220,
+          "packets": [
+            {
+              "id": "p1",
+              "protocol": "icmp",
+              "src": "10.1.1.1",
+              "dst": "172.16.0.1",
+              "slot": 0,
+              "diveAt": 440,
+              "path": "sway"
+            },
+            {
+              "id": "p2",
+              "protocol": "tcp",
+              "src": "10.1.1.1",
+              "dst": "172.16.0.1",
+              "port": 80,
+              "slot": 1,
+              "diveAt": 760,
+              "path": "sway"
+            },
+            {
+              "id": "p3",
+              "protocol": "tcp",
+              "src": "10.255.255.255",
+              "dst": "172.16.0.1",
+              "port": 80,
+              "slot": 2,
+              "diveAt": 600,
+              "path": "zigzag"
+            },
+            {
+              "id": "p4",
+              "protocol": "tcp",
+              "src": "11.0.0.1",
+              "dst": "172.16.0.1",
+              "port": 80,
+              "slot": 3,
+              "diveAt": 360,
+              "path": "drop"
+            },
+            {
+              "id": "p5",
+              "protocol": "udp",
+              "src": "10.0.0.1",
+              "dst": "172.16.0.1",
+              "port": 53,
+              "slot": 4,
+              "diveAt": 920,
+              "path": "zigzag"
+            },
+            {
+              "id": "p6",
+              "protocol": "icmp",
+              "src": "203.0.113.9",
+              "dst": "172.16.0.1",
+              "slot": 5,
+              "diveAt": 680,
+              "path": "drop"
+            },
+            {
+              "id": "p7",
+              "protocol": "tcp",
+              "src": "9.255.255.255",
+              "dst": "172.16.0.1",
+              "port": 443,
+              "slot": 6,
+              "diveAt": 520,
+              "path": "swoop-in"
+            },
+            {
+              "id": "p8",
+              "protocol": "udp",
+              "src": "12.0.0.5",
+              "dst": "172.16.0.1",
+              "port": 123,
+              "slot": 7,
+              "diveAt": 840,
+              "path": "swoop-in"
+            }
+          ],
+          "hints": [
+            "A /8 prefix covers every address that starts with the same first number. 10.0.0.0/8 covers everything that starts with 10. and nothing else."
+          ]
+        }
+      ],
+      "briefing": "## The hidden last entry\n\n- Every list ends with an invisible **deny everything**.\n- A packet that matches nothing is **denied**. Shoot it.\n\n## Watch the protocol\n\n- **tcp** never matches udp or icmp packets.\n- An entry with a port never matches icmp, which has no port.\n- **ip** matches any protocol.\n\n## Example\n\n> 10 permit tcp 192.168.9.0/24 any eq 22\n\nA UDP packet from 192.168.9.4 to port 22 has the wrong protocol. Nothing matches, so the hidden deny drops it.\n\n## Tip\n\n- This is the fastest level."
+    }
+  ]
+}

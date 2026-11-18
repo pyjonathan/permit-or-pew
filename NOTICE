@@ -1,0 +1,27 @@
+Permit or Pew
+Copyright 2026 Jonathan Buchanan
+
+Licensed under the Apache License, Version 2.0. See the LICENSE file.
+
+This project includes material from other projects.
+
+1. NAF AC6 workshop materials and the Networking Video Game Starter Kit
+   Apache License 2.0. Copyright belongs to their authors, as stated in those repositories
+   (the workshop is credited to John Capobianco, Joksan Flores, and Elliot Conner).
+   https://github.com/automateyournetwork/NAF_AC6
+   https://github.com/automateyournetwork/NetworkingVideoGameStarterKit
+
+   Files adapted from this material, and changed for this project: CONSTITUTION.md, SPEC.md, PLAN.md,
+   and the structure of README.md. The starter files were filled in, rewritten, and extended for this
+   game. The root SPEC.md and PLAN.md still hold much of the original starter text.
+
+2. GitHub Spec Kit
+   MIT License. https://github.com/github/spec-kit
+   Used as installed by the Specify CLI (version 1.4.0): the templates, scripts, and skills under
+   .specify/ and .claude/skills/. They are not changed here, except for .specify/memory/constitution.md
+   (this project's constitution, written from Spec Kit's template) and the files Spec Kit generates
+   for this feature.
+
+3. Cisco and RFC documents
+   The game cites, but does not copy, the Cisco IOS XE documentation and RFC 4632 listed in
+   data/levels.json and README.md, for the networking facts it teaches.

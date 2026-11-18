@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Permit or Pew tests</title>
+  <link rel="icon" href="data:,">
+  <style>
+    body { font: 16px/1.5 system-ui, sans-serif; margin: 2rem; max-width: 50rem; }
+    .pass { color: #0a6b2d; } .fail { color: #b00020; }
+    code { background: #eee; padding: 0 .25em; }
+  </style>
+</head>
+<body>
+  <h1>Permit or Pew tests</h1>
+  <p id="summary" role="status">Running…</p>
+  <ul id="failures"></ul>
+  <script type="module">
+    import { runAll } from './harness.js';
+    const summary = document.getElementById('summary');
+    const failures = document.getElementById('failures');
+    try {
+      await import('./acl.test.js');
+      await import('./content.test.js');
+      await import('./briefing.test.js');
+      await import('./feedback.test.js');
+      await import('./results.test.js');
+      await import('./sounds.test.js');
+      await import('./loop.test.js');
+      await import('./state.test.js');
+      await import('./waves.test.js');
+      const result = await runAll();
+      if (result.total === 0) {
+        summary.textContent = 'FAIL: no tests were discovered. An empty suite is not a pass.';
+        summary.className = 'fail';
+      } else if (result.failed.length) {
+        summary.textContent = `FAIL: ${result.passed} of ${result.total} passed, ${result.failed.length} failed.`;
+        summary.className = 'fail';
+        for (const f of result.failed) {
+          const li = document.createElement('li');
+          li.innerHTML = '<code></code>: <span></span>';
+          li.querySelector('code').textContent = f.id;
+          li.querySelector('span').textContent = f.error;
+          failures.appendChild(li);
+        }
+      } else {
+        summary.textContent = `PASS: ${result.passed} of ${result.total} tests passed.`;
+        summary.className = 'pass';
+      }
+    } catch (error) {
+      summary.textContent = 'FAIL: the test runner could not load: ' + error.message;
+      summary.className = 'fail';
+    }
+  </script>
+</body>
+</html>

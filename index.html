@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Permit or Pew: shoot the denied, pass the permitted</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#controls">Skip to controls</a>
+
+  <header class="top">
+    <h1>Permit or Pew</h1>
+    <div class="status" id="status">
+      <span id="position">Loading…</span>
+      <span class="health">
+        <span id="health-hearts" class="hearts" aria-hidden="true">♥♥♥</span>
+        <span id="health-text">Health 3 of 3</span>
+      </span>
+    </div>
+  </header>
+
+  <main>
+    <!-- Briefings, wave reviews, summaries, and error screens appear here. -->
+    <section id="screen" aria-label="Game screen"></section>
+
+    <div id="game" hidden>
+      <section class="panel" id="acl-panel" aria-labelledby="acl-heading">
+        <h2 id="acl-heading">Access list</h2>
+        <p class="note">Checked from the top. The first entry that matches decides.</p>
+        <div class="scroll" id="acl-scroll" role="region" aria-label="Access list entries" tabindex="0">
+          <ol id="acl" class="acl"></ol>
+        </div>
+      </section>
+
+      <section class="panel" id="field-panel" aria-labelledby="field-heading">
+        <h2 id="field-heading" tabindex="-1">Playfield</h2>
+        <p class="note">Shoot packets the list <strong>denies</strong>. Let <strong>permitted</strong> packets reach the network.</p>
+        <svg id="field" role="img" aria-labelledby="field-heading field-desc" viewBox="0 0 700 560"></svg>
+        <p id="field-desc" class="sr-only">A picture of packets in a formation that dive toward a network at the bottom, with your ship and bullets. The list below gives the same information as text.</p>
+        <h3>Packets (text version)</h3>
+        <p id="ship-text" class="note"></p>
+        <ul id="mirror" class="mirror"></ul>
+      </section>
+
+      <section class="panel" id="feedback-panel" aria-labelledby="feedback-heading">
+        <h2 id="feedback-heading">Feedback</h2>
+        <p id="counts" class="note"></p>
+        <div id="feedback" role="status" aria-live="polite" aria-atomic="true">
+          <p class="note">Your latest decision appears here. Every mistake is explained in full in the review after the wave.</p>
+        </div>
+      </section>
+    </div>
+
+    <section id="controls" class="controls" aria-label="Controls">
+      <button type="button" data-action="hop-left" aria-keyshortcuts="ArrowLeft A">◀ Move left</button>
+      <button type="button" data-action="hop-right" aria-keyshortcuts="ArrowRight D">Move right ▶</button>
+      <button type="button" data-action="fire" class="fire" aria-keyshortcuts="Space">Fire</button>
+      <button type="button" data-action="pause" id="btn-pause" aria-keyshortcuts="P">Pause</button>
+      <button type="button" data-action="hint" id="btn-hint" aria-keyshortcuts="H">Hint</button>
+      <button type="button" data-action="step" id="btn-step" aria-keyshortcuts="N">Advance</button>
+      <label class="speed">Speed
+        <select id="speed">
+          <option value="step">Step (you advance time)</option>
+          <option value="slow">Slow (half speed)</option>
+          <option value="normal" selected>Normal</option>
+        </select>
+      </label>
+      <button type="button" data-action="mute" id="btn-sound" aria-keyshortcuts="M">Sound: on</button>
+      <label class="volume">Volume <input type="range" id="volume" min="0" max="100" value="60"></label>
+      <button type="button" data-action="restart" id="btn-restart">Restart</button>
+    </section>
+
+    <section class="keys" aria-label="Keyboard shortcuts">
+      <h2>Keys</h2>
+      <ul class="keylist">
+        <li><kbd>←</kbd> <kbd>→</kbd> or <kbd>A</kbd> <kbd>D</kbd> move (hold)</li>
+        <li><kbd>Space</kbd> fire</li>
+        <li><kbd>P</kbd> pause</li>
+        <li><kbd>M</kbd> sound on/off</li>
+        <li><kbd>H</kbd> hint (when paused)</li>
+        <li><kbd>N</kbd> advance (Step speed)</li>
+        <li><kbd>Enter</kbd> continue</li>
+      </ul>
+    </section>
+  </main>
+
+  <dialog id="restart-dialog" aria-labelledby="restart-title">
+    <h2 id="restart-title">Restart the game?</h2>
+    <p>This clears your progress and returns to the first briefing.</p>
+    <div class="row">
+      <button type="button" data-action="confirm-restart" class="primary">Restart</button>
+      <button type="button" data-action="cancel-restart" id="btn-cancel-restart">Cancel</button>
+    </div>
+  </dialog>
+
+  <script>
+    // If the game has not started a few seconds after the page loaded, say so instead of staying on "Loading…".
+    // The usual cause is an old copy of some files kept by the browser. This plain script runs even when the
+    // game's own modules fail to load.
+    (function () {
+      function show() {
+        var position = document.getElementById('position');
+        if (!position || position.textContent !== 'Loading…') return;
+        document.getElementById('screen').innerHTML =
+          '<h2 tabindex="-1">The game did not start</h2>' +
+          '<p>This is usually an old copy of the game kept by your browser. Press <strong>Ctrl+Shift+R</strong> (Cmd+Shift+R on a Mac) to reload without the cache.</p>' +
+          '<p>If that does not help, start the game with <code>py serve.py</code> in the project folder and open <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a>.</p>';
+      }
+      setTimeout(show, 4000);
+      window.addEventListener('error', function () { setTimeout(show, 400); });
+    })();
+  </script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

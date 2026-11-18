@@ -1,0 +1,30 @@
+# Permit or Pew
+#
+# The game is plain files (no build step, no packages), so very little needs ignoring. This list keeps
+# machine leftovers and anything secret out of the repository.
+#
+# NOT ignored on purpose, because they are part of the project and its evidence:
+#   specs/, .specify/ (the constitution and Spec Kit templates), .claude/skills/ (the Spec Kit skills),
+#   data/, assets/ (the card image), tests/, ARCADE.md, README.md.
+# Spec Kit keeps its own machine-local files out of git in .specify/.gitignore, so they are not repeated here.
+
+# Operating system and editor leftovers
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Python bytecode caches (serve.py is run as a script, but this keeps them out if it is ever imported)
+__pycache__/
+*.pyc
+
+# Node packages, in case npm tooling is added later (the game itself has no dependencies)
+node_modules/
+
+# Local secrets and logs. The game needs no keys or accounts, but these should never be committed.
+.env
+.env.*
+*.log
+
+# Personal Claude Code settings for one machine (permissions you approved). The shared Spec Kit skills in
+# .claude/skills are committed; only this local file is ignored.
+.claude/settings.local.json
